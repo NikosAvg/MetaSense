@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">Edit Sensor Data</h2>
+    <form id="sensor-data-form">
+        <div class="mb-3">
+            <label for="sensor_id" class="form-label">Sensor</label>
+            <select class="form-select" id="sensor_id" name="sensor_id" required>
+                {% for sensor in sensors %}
+                <option value="{{ sensor.id }}" {% if sensor.id == data_entry.sensor_id %}selected{% endif %}>
+                    {{ sensor.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="timestamp" class="form-label">Timestamp</label>
+            <input type="datetime-local" class="form-control" id="timestamp" name="timestamp" value="{{ data_entry.timestamp }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="value" class="form-label">Value</label>
+            <input type="number" step="any" class="form-control" id="value" name="value" value="{{ data_entry.value }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="unit" class="form-label">Unit</label>
+            <input type="text" class="form-control" id="unit" name="unit" value="{{ data_entry.unit }}">
+        </div>
+        <div class="mb-3">
+            <label for="extra_data" class="form-label">Extra Data (JSON)</label>
+            <textarea class="form-control" id="extra_data" name="extra_data">{{ data_entry.extra_data | tojson }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-warning">Update Sensor Data</button>
+    </form>
+</div>
+
+<script>
+    const API_URL = '/api/sensor_data/{{ data_entry.id }}';
+
+    document.getElementById('sensor-data-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const data = {
+            sensor_id: document.getElementById('sensor_id').value,
+            timestamp: document.getElementById('timestamp').value,
+            value: document.getElementById('value').value,
+            unit: document.getElementById('unit').value,
+            extra_data: document.getElementById('extra_data').value
+        };
+
+        await fetch(API_URL, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        window.location.href = '/sensor_data/';
+    });
+</script>
+{% endblock %}

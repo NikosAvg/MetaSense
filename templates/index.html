@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container text-center">
+    <h1 class="display-4 mt-4">Welcome to MetaSense</h1>
+    <p class="lead">
+        Manage your projects, sensors, and sensor data efficiently using our intuitive dashboard.
+    </p>
+    <hr class="my-4">
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">Projects</div>
+                <div class="card-body">
+                    <p class="card-text">
+                        View, add, edit, or delete projects that organize your sensors.
+                    </p>
+                    <a href="/projects/" class="btn btn-primary btn-block">Manage Projects</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">Sensors</div>
+                <div class="card-body">
+                    <p class="card-text">
+                        View, add, edit, or delete sensors assigned to projects.
+                    </p>
+                    <a href="/sensors" class="btn btn-success btn-block">Manage Sensors</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">Sensor Data</div>
+                <div class="card-body">
+                    <p class="card-text">
+                        View, add, edit, or delete the data collected from sensors.
+                    </p>
+                    <a href="/sensor_data/" class="btn btn-info btn-block">Manage Sensor Data</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

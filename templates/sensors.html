@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">Sensors</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Project</th>
+                <th>Extra Data</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="sensors-table-body">
+            <!-- JavaScript will populate rows dynamically -->
+        </tbody>
+    </table>
+    <a href="/sensors/add" class="btn btn-primary">Add Sensor</a>
+</div>
+
+<script>
+    const API_URL = '/api/sensors';
+
+    // Fetch sensors and populate the table
+    async function fetchSensors() {
+        const response = await fetch(API_URL);
+        const sensors = await response.json();
+
+        const tableBody = document.getElementById('sensors-table-body');
+        tableBody.innerHTML = '';
+
+        sensors.forEach(sensor => {
+            const row = `
+                <tr>
+                    <td>${sensor.id}</td>
+                    <td>${sensor.name}</td>
+                    <td>${sensor.type}</td>
+                    <td>${sensor.project_id}</td>
+                    <td>${sensor.extra_data}</td>
+                    <td>
+                        <a href="/sensors/${sensor.id}/edit" class="btn btn-warning btn-sm">Edit</a>
+                        <button onclick="deleteSensor(${sensor.id})" class="btn btn-danger btn-sm">Delete</button>
+                    </td>
+                </tr>
+            `;
+            tableBody.insertAdjacentHTML('beforeend', row);
+        });
+    }
+
+    // Delete a sensor
+    async function deleteSensor(id) {
+        if (confirm('Are you sure you want to delete this sensor?')) {
+            await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            fetchSensors();
+        }
+    }
+
+    // Fetch sensors on page load
+    fetchSensors();
+</script>
+{% endblock %}

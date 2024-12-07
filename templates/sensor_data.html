@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">Sensor Data</h2>
+
+    <!-- Table -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Sensor</th>
+                <th>Timestamp</th>
+                <th>Value</th>
+                <th>Unit</th>
+                <th>Extra Data</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="sensor-data-table-body">
+            <!-- JavaScript will populate rows dynamically -->
+        </tbody>
+    </table>
+
+    <!-- Pagination Controls -->
+    <nav>
+        <ul class="pagination justify-content-center" id="pagination-controls">
+            <!-- JavaScript will dynamically generate pagination -->
+        </ul>
+    </nav>
+
+    <!-- Add Sensor Data Button -->
+    <a href="/sensor_data/add" class="btn btn-primary">Add Sensor Data</a>
+</div>
+
+<!-- Loading Spinner -->
+<div id="loading-spinner" style="display: none; text-align: center;">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+<script>
+    const API_URL = '/api/sensor_data';
+    const tableBody = document.getElementById('sensor-data-table-body');
+    const paginationControls = document.getElementById('pagination-controls');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    let currentPage = 1;
+    const perPage = 10; // Number of items per page
+
+    // Fetch sensor data and populate the table
+    async function fetchSensorData(page = 1) {
+        try {
+            // Show the loading spinner
+            loadingSpinner.style.display = 'block';
+
+            const response = await fetch(`${API_URL}?page=${page}&per_page=${perPage}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch sensor data');
+            }
+
+            const data = await response.json();
+            tableBody.innerHTML = ''; // Clear existing table rows
+
+            // Populate table with sensor data
+            data.data.forEach(sensor => {
+                const row = `
+                    <tr>
+                        <td>${sensor.id}</td>
+                        <td>${sensor.sensor_id}</td>
+                        <td>${sensor.timestamp}</td>
+                        <td>${sensor.value}</td>
+                        <td>${sensor.unit}</td>
+                        <td>${JSON.stringify(sensor.extra_data)}</td>
+                        <td>
+                            <a href="/sensor_data/${sensor.id}/edit" class="btn btn-warning btn-sm">Edit</a>
+                            <button onclick="deleteSensorData(${sensor.id})" class="btn btn-danger btn-sm">Delete</button>
+                        </td>
+                    </tr>
+                `;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+
+            // Update pagination controls
+            updatePagination(data.page, data.pages);
+
+        } catch (error) {
+            alert(`Error: ${error.message}`);
+        } finally {
+            // Hide the loading spinner
+            loadingSpinner.style.display = 'none';
+        }
+    }
+
+    // Delete a sensor data entry
+    async function deleteSensorData(id) {
+        if (confirm('Are you sure you want to delete this data entry?')) {
+            try {
+                const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                if (!response.ok) {
+                    throw new Error('Failed to delete sensor data');
+                }
+                fetchSensorData(currentPage); // Reload current page after deletion
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+            }
+        }
+    }
+
+    
+    function updatePagination(current, total) {
+        const range = 2; // Number of pages to show before and after the current page
+        paginationControls.innerHTML = ''; // Clear existing controls
+
+        // Helper to add a pagination item
+        const addPageItem = (page, text = page, active = false, disabled = false) => {
+            paginationControls.insertAdjacentHTML(
+                'beforeend',
+                `<li class="page-item ${active ? 'active' : ''} ${disabled ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="fetchSensorData(${page})">${text}</a>
+                </li>`
+            );
+        };
+
+        // Previous button
+        addPageItem(current - 1, 'Previous', false, current === 1);
+
+        // First page
+        if (current > range + 1) {
+            addPageItem(1);
+            if (current > range + 2) {
+                paginationControls.insertAdjacentHTML('beforeend', '<li class="page-item disabled"><span class="page-link">...</span></li>');
+            }
+        }
+
+        // Pages around the current page
+        for (let i = Math.max(1, current - range); i <= Math.min(total, current + range); i++) {
+            addPageItem(i, i, i === current);
+        }
+
+        // Last page
+        if (current < total - range) {
+            if (current < total - range - 1) {
+                paginationControls.insertAdjacentHTML('beforeend', '<li class="page-item disabled"><span class="page-link">...</span></li>');
+            }
+            addPageItem(total);
+        }
+
+        // Next button
+        addPageItem(current + 1, 'Next', false, current === total);
+    }
+
+
+    // Fetch sensor data for the first page on load
+    fetchSensorData(currentPage);
+</script>
+{% endblock %}

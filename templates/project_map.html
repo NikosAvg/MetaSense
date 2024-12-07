@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">{{ project.name }} - Sensor Map</h2>
+    <p>Below is a map showing the sensors associated with the project "<strong>{{ project.name }}</strong>".</p>
+    <div id="map" style="height: 600px; border: 1px solid #ccc;"></div>
+</div>
+
+<!-- Include Leaflet.js and Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<!-- Make sure you put this AFTER Leaflet's CSS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<script>
+    // Initialize the map with a fallback center and zoom level
+    var map = L.map('map').setView([20, 0], 2); // Default to a global view if no markers exist
+
+    // Add OpenStreetMap tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Sensor data passed from the backend
+    var sensors = {{ sensors | tojson | safe }};
+    console.log(sensors); // Debug to ensure sensors is a valid array
+    
+    if (sensors.length > 0) {
+        // Add markers for each sensor
+        var markerGroup = L.featureGroup(); // Group markers for better handling
+        sensors.forEach(function(sensor) {
+            if (sensor.latitude && sensor.longitude) {
+                var marker = L.marker([sensor.latitude, sensor.longitude]).addTo(markerGroup);
+                marker.bindPopup(`<b>Sensor Name:</b> ${sensor.name}<br><b>Latitude:</b> ${sensor.latitude}<br><b>Longitude:</b> ${sensor.longitude}`);
+            }
+        });
+
+        // Add the group to the map
+        markerGroup.addTo(map);
+
+        // Adjust map bounds to fit all markers
+        map.fitBounds(markerGroup.getBounds().pad(0.2)); // Padding to prevent markers at the edges
+    } else {
+        // Display a message if no sensors are found
+        alert('No sensors found for this project.');
+    }
+</script>
+{% endblock %}
