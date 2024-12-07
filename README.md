@@ -30,13 +30,13 @@ MetaSense is a powerful and extensible platform for managing and visualizing dat
 ## Demo
 
 *Screenshot of the Home Page.*
-![MetaSense Demo Home Screenshot](Demo/Home.png)
+![MetaSense Demo Home Screenshot](Demo/Home.PNG)
 *Screenshot of the Projects Page.*
-![MetaSense Demo Home Screenshot](Demo/Projects.png)
+![MetaSense Demo Home Screenshot](Demo/Projects.PNG)
 *Screenshot of the Sensors Page.*
-![MetaSense Demo Home Screenshot](Demo/Sensors.png)
+![MetaSense Demo Home Screenshot](Demo/Sensors.PNG)
 *Screenshot of the Home Page.*
-![MetaSense Demo Data Screenshot](Demo/Data.png)
+![MetaSense Demo Data Screenshot](Demo/Data.PNG)
 
 ---
 
