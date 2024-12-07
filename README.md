@@ -83,4 +83,4 @@ For inquiries, please contact:
 
 - Developer: Nikolaos Avgoustis
 - Email: nik.avg@hotmail.com
-- Github: (https://github.com/NikosAvg)[@NikosAvg]
+- Github: [@NikosAvg](https://github.com/NikosAvg)
