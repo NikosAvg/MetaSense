@@ -7,10 +7,6 @@ MetaSense is a powerful and extensible platform for managing and visualizing dat
 - [Features](#features)
 - [Demo](#demo)
 - [Installation](#installation)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [API Endpoints](#api-endpoints)
-- [Tech Stack](#tech-stack)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -59,3 +55,32 @@ Follow these steps to set up the project locally:
 ```bash
 git clone https://github.com/your-username/metasense.git
 cd metasense
+```
+
+
+## Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. Fork the repository.
+2. Create a feature branch:
+  ```bash
+  git checkout -b feature-name
+  ```
+3. Commit your changes:
+  ```bash
+  git commit -m 'Add a feature'
+  ```
+4. Push to your branch:
+  ```bash
+  git push origin feature-name
+  ```
+5. Open a pull request.
+
+## Contact
+
+For inquiries, please contact:
+
+- Developer: Nikolaos Avgoustis
+- Email: nik.avg@hotmail.com
+- Github: @NikosAvg
